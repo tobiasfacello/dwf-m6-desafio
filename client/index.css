@@ -1,0 +1,65 @@
+:root {
+	--grey-gradient: linear-gradient(180deg, #fcffdf 0%, #dfe0df 100%);
+	--dark-gradient: linear-gradient(190.67deg, #2e2e2e 8.33%, #000000 100%);
+	--mint-gradient: linear-gradient(266.04deg, #c8fcea 0%, #6bbaa2 100%);
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	--salmon-gradient: linear-gradient(
+		68.8deg,
+		rgba(234, 184, 163, 1) 4%,
+		rgba(247, 153, 130, 1) 49%,
+		rgba(255, 126, 119, 1) 90.4%
+	);
+	--red-gradient: linear-gradient(180deg, #ff6767 0%, #c0564b 100%);
+	--yellow-gradient: linear-gradient(360deg, #f7cf4b 0%, #ffc269 100%);
+	--rps-gradient: linear-gradient(
+		210deg,
+		#381d95 0%,
+		#00bbcd 50.07%,
+		#e7316b 100%
+	);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	background-image: url("./assets/background-img.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	overflow: hidden;
+}
+
+@media (min-width: 375px) {
+	body {
+		background-size: fill;
+	}
+}
+
+.root {
+	width: 100%;
+}
+
+.rps-container {
+	width: 375px;
+	margin: 0 auto;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-evenly;
+}
+
+@media (min-width: 768px) {
+	.rps-container {
+		width: 380px;
+		justify-content: space-between;
+	}
+}
+
+.hand-img {
+	height: 100%;
+	width: 100px;
+}
