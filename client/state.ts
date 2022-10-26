@@ -1,6 +1,6 @@
 import { realtimeDBClient } from "./db";
 import { Router } from "@vaadin/router";
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://rps-gameapp.onrender.com";
 
 //? Se declara el tipo "Jugada" para limitar el valor de los datos.
 type Jugada = "piedra" | "papel" | "tijeras";
