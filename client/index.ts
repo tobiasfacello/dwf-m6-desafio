@@ -1,5 +1,5 @@
 import { state } from "./state";
-import "./router";
+import "../server/router";
 
 //* Pages
 import "./pages/home/index";
