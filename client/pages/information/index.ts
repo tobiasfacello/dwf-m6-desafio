@@ -1,116 +1,155 @@
-const linkedin = require("url:../../images/3d-fluency-linkedin.png");
-const github = require("url:../../images/3d-fluency-github.png");
-const twitter = require("url:../../images/3d-fluency-twitter.png");
-const apxLogo = require("url:../../images/apx-logo-over-yellow.png");
+const rpsApp = require("url:../../assets/rps-app.png");
 
-export function initGreetingsPage() {
-	const divEl = document.createElement("div");
-	divEl.classList.add("div-container");
+const htmlIcon = require("url:../../assets/html5.svg");
+const cssIcon = require("url:../../assets/css3.svg");
+const tsIcon = require("url:../../assets/typescript.svg");
+const nodeIcon = require("url:../../assets/nodejs.svg");
+const expressIcon = require("url:../../assets/express.svg");
+const firebaseIcon = require("url:../../assets/firebase.svg");
+const postmanIcon = require("url:../../assets/postman.svg");
+const parcelIcon = require("url:../../assets/parcel.svg");
+const githubIcon = require("url:../../assets/github.svg");
+const linkedInIcon = require("url:../../assets/linkedin.svg");
+const apxIcon = require("url:../../assets/apx-logo.png");
 
-	divEl.innerHTML = `
-    <text-component>Gracias por participar!</text-component>
-        <div class="social-media-container">
-            <div class="social-media">
-                <a href="https://www.linkedin.com/in/tobiasfacello/" target="blank_"><img class ="social-media-img" src="${linkedin}"></a>
-                <h2 class="user">@tobiasfacello</h2>
+customElements.define(
+	"information-page",
+	class initInformationPage extends HTMLElement {
+		connectedCallback() {
+			const rpsContainerEl: HTMLElement =
+				document.querySelector(".rps-container");
+			rpsContainerEl.style.display = "none";
+
+			this.render();
+		}
+
+		render() {
+			this.innerHTML = `
+            <div class="div-container">
+				<section class="main-section">
+					<p class="brand-slogan">Información</p>
+                    <section class="info-section">
+                        <p class="brand-info"><b class="yellow-text">RPS</b> es una Web App basada en el desafío final del módulo 6 de la carrera <b>Desarrollador Web Fullstack</b> de <b>apx.school</b>.</p>
+                        <div class="rpsapp-container">
+                            <img class="rpsapp__img" src="${rpsApp}">
+                            <div class="rpsapp__techs">
+                            <p class="brand-slogan">Tecnologías y Herramientas</p>
+                                <div class="techs-group">
+                                    <img title="HTML" class="rpsapp__tech-item" src="${htmlIcon}">
+                                    <img title="CSS" class="rpsapp__tech-item" src="${cssIcon}">
+                                    <img title="Typescript" class="rpsapp__tech-item" src="${tsIcon}">
+                                    <img title="NodeJs" class="rpsapp__tech-item" src="${nodeIcon}">
+                                </div>
+                                <div class="techs-group">
+                                    <img title="Express" class="rpsapp__tech-item" src="${expressIcon}">
+                                    <img title="Firebase" class="rpsapp__tech-item" src="${firebaseIcon}">
+                                    <img title="Postman" class="rpsapp__tech-item" src="${postmanIcon}">
+                                    <img title="Parcel" class="rpsapp__tech-item" src="${parcelIcon}">
+                                </div>
+                                <div>
+                                    <p class="brand-slogan">Links</p>
+                                    <a href="https://github.com/tobiasfacello/dwf-m6-desafio" target="blank_"><img title="Repositorio" class="rpsapp__tech-item" src="${githubIcon}"></a>
+                                    <a  href="https://www.linkedin.com/in/tobiasfacello/" target="blank_"><img title="LinkeIn" class="rpsapp__tech-item" src="${linkedInIcon}"></a>
+                                    <a  href="https://apx.school/profile/d8e5d39a-61a8-45e6-a125-60bd1248ffee" target="blank_"><img title="Perfil personal" class="rpsapp__tech-item" src="${apxIcon}"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+            	</section>
             </div>
-            <div class="social-media">
-                <a href="https://github.com/tobiasfacello" target="blank_"><img class ="social-media-img" src="${github}"></a>                <h2 class="user">@tobiasfacello</h2>
-            </div>
-            <div class="social-media">
-                <a href="https://twitter.com/fache_dev" target="blank_"><img class ="social-media-img" src="${twitter}"></a>
-                <h2 class="user">@fache_dev</h2>
-            </div>
-        </div>
+            `;
 
-        <img class="apx-logo" src="${apxLogo}">
+			let style = document.createElement("style");
+			style.textContent = `
+            .div-container {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .info-section {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .brand-slogan,
+            .brand-info {
+                width: 100%;
+                margin: 10px 0;
+                font-family: "Raleway", sans-serif;
+                font-weight: 600;
+                font-size: 15px;
+                text-align: center;
+                color: #EEE;
+            }
+            .brand-info {
+                max-width: 380px;
+                width: 100%;
+                margin: 20px 0;
+                font-weight: 500;
+                line-height: 30px;
+            }
+            @media (min-width: 768px) {
+                .brand-info {
+                    max-width: 450px;
+                }
+            }
+            .brand-info .yellow-text {
+                color: #FFC269;
+            }
+            .brand-info .white-text {
+                color: #FFFFFF;
+            }
+            @media (min-width: 768px){
+                .rpsapp-container {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: start;
+                    gap: 20px;
+                }
+            }
+            .rpsapp__img {
+                width: 100%;
+                max-width: 300px;
+                margin: 20px 0;
+            }
+            @media (min-width: 768px) {
+                .rpsapp__img {
+                    max-width: 400px;
+                    margin-top: 10px;
+                }    
+            } 
+            
+            .rpsapp__techs {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-evenly;
+                align-items: center;
+                gap: 10px;
+            }
+            .rpsapp__tech-item {
+                width: 40px;
+                height: 40px;
+                margin: 0 10px;
+            }
+            
+            @media (min-width: 960px) {
+                .rpsapp__tech-item:hover {
+                    background: linear-gradient(190.67deg, #2E2E2E 8.33%, #000000 100%);
+                    border: none;
+                    border-radius: 5px;
+                    padding: 5px;
+                }
+            }
+            `;
 
-        <div class="apx-greetings">
-        <h2 class="greetings-text">Carrera DWF</h2>
-        <h2 class="greetings-text">Desafío: Módulo 5</h2>
-        <h2 class="greetings-text">Piedra, Papel ó Tijeras</h2>
-        </div>
-
-    `;
-
-	const style = document.createElement("style");
-
-	style.textContent = `
-    .div-container {
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: center;
-    }
-
-    @media (min-width: 960px) {
-        .div-container {
-            flex-direction: row;
-        }
-    }
-
-    .apx-greetings {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: center;
-        margin: 30px 0;
-        padding: 10px;
-        border-radius: 10px;
-        background: linear-gradient(109.6deg, rgba(33,25,180,1) 11.2%, rgba(253,29,29,1) 55.2%, rgba(252,176,69,1) 91.1%);
-        background-size: 600% 600%;
-        animation: gradient 3s ease infinite;
-    }
-
-    .apx-logo {
-        width: 170px;
-        margin-top: 40px;
-    }
-
-    .social-media-container {
-        padding: 20px;
-        border-radius: 10px;
-        background: linear-gradient(109.6deg, rgba(33,25,180,1) 11.2%, rgba(253,29,29,1) 55.2%, rgba(252,176,69,1) 91.1%);
-        background-size: 600% 600%;
-        animation: gradient 3s ease infinite;
-    }
-
-    .social-media {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .social-media-img {
-        width: 50px;
-    }
-
-    .greetings-text,
-    .user {
-        font-family: "Poppins", sans-serif;
-        font-size: 20px;
-        font-weight: 700;
-        color: #eee;
-        text-shadow: 0 0 10px #fff;
-    }
-
-    @keyframes gradient {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-    `;
-
-	divEl.appendChild(style);
-
-	return divEl;
-}
+			this.appendChild(style);
+		}
+	}
+);

@@ -11,6 +11,7 @@ import "./pages/waitroom/index";
 import "./pages/play/index";
 import "./pages/timeout/index";
 import "./pages/results/index";
+import "./pages/information/index";
 
 //* Components
 import "./components/header-comp";

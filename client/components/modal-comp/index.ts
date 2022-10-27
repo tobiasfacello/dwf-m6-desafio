@@ -156,11 +156,6 @@ class ModalBtnComponent extends HTMLElement {
 					location.pathname !== "/gameroom/results"
 				) {
 					history.back();
-				} else if (location.pathname == "/gameroom/instructions") {
-					const userAuthId: string = state.getUserAuthData().userId;
-					const secureId: string = state.getRoomAccessData().secureId;
-					state.updatePlayerStatus(secureId, userAuthId, "offline");
-					history.back();
 				} else if (location.pathname == "/gameroom/waitroom") {
 					const userAuthId: string = state.getUserAuthData().userId;
 					const secureId: string = state.getRoomAccessData().secureId;
@@ -194,6 +189,9 @@ class ModalBtnComponent extends HTMLElement {
 		exitBtnEl.addEventListener("click", () => {
 			if (returnModalEl.hasAttribute("open")) {
 				returnModalEl.close();
+				const userAuthId: string = state.getUserAuthData().userId;
+				const secureId: string = state.getRoomAccessData().secureId;
+				state.updatePlayerStatus(secureId, userAuthId, "offline");
 			}
 		});
 	}

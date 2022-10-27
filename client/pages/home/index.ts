@@ -4,6 +4,10 @@ customElements.define(
 	"home-page",
 	class initHomePage extends HTMLElement {
 		connectedCallback() {
+			const rpsContainerEl: HTMLElement =
+				document.querySelector(".rps-container");
+			rpsContainerEl.style.display = "flex";
+
 			this.render();
 			this.addListeners();
 		}

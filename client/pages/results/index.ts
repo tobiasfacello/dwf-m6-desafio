@@ -12,9 +12,11 @@ customElements.define(
 			const headerEl = document.querySelector(".header") as HTMLElement;
 			headerEl.style.display = "flex";
 
-			const secureGameRoomId =
-				state.getState().currentGameRoom.accessData.secureId;
-			state.initGameRoom(secureGameRoomId);
+			const secureId = state.getRoomAccessData().secureId;
+			const userAuthId: string = state.getUserAuthData().userId;
+			state.updatePlayerChoice(secureId, userAuthId, "");
+
+			state.initGameRoom(secureId);
 			state.subscribe(() => {
 				this.render();
 				this.addListeners();
@@ -125,7 +127,6 @@ customElements.define(
 			playAgainBtnEl.addEventListener("click", () => {
 				const secureId = state.getRoomAccessData().secureId;
 				const userAuthId: string = state.getUserAuthData().userId;
-				state.updatePlayerChoice(secureId, userAuthId, "");
 				state.updatePlayerStatus(secureId, userAuthId, "ready");
 				state.setPlayersSelections(false);
 			});
