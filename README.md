@@ -1,3 +1,4 @@
 # dwf-m6-desafio
 ## Desafío del módulo 6
-https://rps-gameapp.onrender.com
+App Demo: https://rps-gameapp.onrender.com
+API Docs: https://documenter.getpostman.com/view/21533255/2s8YKJDLh8
