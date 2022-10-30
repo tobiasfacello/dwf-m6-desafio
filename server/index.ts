@@ -84,7 +84,7 @@ app.post("/users/auth", (req, res) => {
 		});
 });
 
-//? Crea un nuevo gameroom en las bases de datos.
+//? Crea un nuevo gameroom en las bases de datos y agrega al jugador.
 app.post("/gamerooms", (req, res) => {
 	const secureId = uuidv4(); // Genera un ID de seguridad.
 	const friendlyId = makeRandomId(5); // Genera un ID "amigable".
@@ -299,7 +299,7 @@ app.patch("/rtdb/gamerooms/:secureId/:userId/score", (req, res) => {
 
 	gameRoomPlayerRef.update({ score: `${userScore}` }).then((data) => {
 		res.status(202).send({
-			message: `Elección de usuario actualizada: ${userScore}`,
+			message: `Marcador de usuario actualizado: ${userScore}`,
 		});
 	});
 });
