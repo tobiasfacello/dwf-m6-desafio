@@ -76,6 +76,7 @@ class ButtonComponent extends HTMLElement {
 	render() {
 		this.shadow.innerHTML = `
         <button class="button
+		${this.hasAttribute("requestBtn") ? "request-btn" : ""}
 		${this.hasAttribute("resizedBtn") ? "resized-btn" : ""}
 		${this.hasAttribute("rpsBtn") ? "rps-btn" : ""}
 		${this.hasAttribute("salmonBtn") ? "salmon-btn" : ""}

@@ -1,3 +1,4 @@
+import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
 customElements.define(
@@ -28,7 +29,7 @@ customElements.define(
                                 ${state.getRoomAccessData().friendlyId}
                             </emph-text>
                         </span>
-                        <btn-comp class="continue-button" path="/gameroom/instructions" darkBtn>Copiar código y Continuar</btn-comp>
+                        <btn-comp class="continue-button" darkBtn>Copiar código y Continuar</btn-comp>
                     </div>
                 </div>
                 `;
@@ -73,9 +74,24 @@ customElements.define(
 				this.querySelector(".continue-button");
 
 			copyBtnEl.addEventListener("click", () => {
+				const secureId = state.getRoomAccessData().secureId;
+				const userAuthId: string = state.getUserAuthData().userId;
+				const userAuthName = state.getUserAuthData().userName;
+
 				const friendlyId = state.getRoomAccessData().friendlyId;
+
+				const newPlayerPromise = state.setRoomPlayersData(
+					secureId,
+					userAuthId,
+					userAuthName
+				);
+
 				navigator.clipboard.writeText(friendlyId);
 				window.alert("Vínculo copiado en portapapeles");
+
+				newPlayerPromise.then(() => {
+					Router.go("/gameroom/instructions");
+				});
 			});
 		}
 	}

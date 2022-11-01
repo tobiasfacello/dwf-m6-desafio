@@ -110,7 +110,7 @@ class AuthFormComponent extends HTMLElement {
                     <input id="username" name="username" class="input__field" type="text" placeholder="Nombre de usuario" value="${this.textContent}" required>
                 </div>
                 <div class="confirmation-container">
-                    <btn-comp class="submit-button" darkBtn>Continuar</btn-comp>
+                    <btn-comp class="submit-button" requestBtn darkBtn>Continuar</btn-comp>
                 </div>
             </form>
         `;
@@ -125,6 +125,9 @@ class AuthFormComponent extends HTMLElement {
 
 		const submitBtnEl: HTMLButtonElement =
 			this.shadow.querySelector(".submit-button");
+
+		const shadowSubmitBtnEl: HTMLButtonElement =
+			submitBtnEl.shadowRoot.querySelector(".button");
 
 		const wrongInputNotifEl: HTMLElement =
 			this.shadow.querySelector(".wrong-input");
@@ -162,8 +165,22 @@ class AuthFormComponent extends HTMLElement {
 			showNotification(wrongInputNotifEl);
 		});
 
+		document.addEventListener("keypress", () => {
+			inputFieldEl.focus();
+		});
+
+		document.addEventListener("keydown", (e) => {
+			if (e.key == "Enter") {
+				submitBtnEl.click();
+			}
+		});
+
 		submitBtnEl.addEventListener("click", (e) => {
 			e.preventDefault();
+			if (shadowSubmitBtnEl.classList.contains("request-btn")) {
+				shadowSubmitBtnEl.disabled = true;
+				shadowSubmitBtnEl.textContent = "Enviando...";
+			}
 			authFormEl.requestSubmit();
 		});
 
@@ -206,11 +223,15 @@ class AuthFormComponent extends HTMLElement {
 								} else {
 									hideNotification(processNotifEl);
 									showNotification(unauthorizedNotifEl);
+									shadowSubmitBtnEl.disabled = false;
+									shadowSubmitBtnEl.textContent = "Continuar";
 								}
 							});
 						} else if (res.status == 401) {
 							hideNotification(processNotifEl);
 							showNotification(unauthorizedNotifEl);
+							shadowSubmitBtnEl.disabled = false;
+							shadowSubmitBtnEl.textContent = "Continuar";
 						}
 					});
 				}

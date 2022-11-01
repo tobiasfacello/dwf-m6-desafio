@@ -89,9 +89,6 @@ app.post("/gamerooms", (req, res) => {
 	const secureId = uuidv4(); // Genera un ID de seguridad.
 	const friendlyId = makeRandomId(5); // Genera un ID "amigable".
 
-	const userId = req.body.userId;
-	const userName = req.body.userName;
-
 	// Crea un gameroom en Realtime usando como referencia el "secureId".
 	const rtdbGameRoomRef = realtimeDB.ref(`/gamerooms/${secureId}`);
 	const rtdbGameRoomId = rtdbGameRoomRef.key;
@@ -117,20 +114,6 @@ app.post("/gamerooms", (req, res) => {
 				});
 			}
 		});
-
-	const gameRoomPlayerRef = realtimeDB.ref(
-		`/gamerooms/${secureId}/playersData/${userId}`
-	);
-
-	gameRoomPlayerRef.set(
-		{
-			name: userName,
-			choice: "",
-			score: 0,
-			status: "online",
-		},
-		(err) => {}
-	);
 });
 
 //* Firestore

@@ -111,7 +111,7 @@ class JoinFormComponent extends HTMLElement {
                     <input id="gameroom" name="gameroom" class="input__field" type="text" placeholder="ID de sala existente" value="${this.textContent}" required>
                 </div>
                 <div class="confirmation-container">
-                    <btn-comp class="submit-button" darkBtn>Continuar</btn-comp>
+                    <btn-comp class="submit-button" requestBtn darkBtn>Continuar</btn-comp>
                 </div>
             </form>
         `;
@@ -126,6 +126,9 @@ class JoinFormComponent extends HTMLElement {
 
 		const submitBtnEl: HTMLButtonElement =
 			this.shadow.querySelector(".submit-button")!;
+
+		const shadowSubmitBtnEl: HTMLButtonElement =
+			submitBtnEl.shadowRoot.querySelector(".button");
 
 		const wrongInputNotifEl: HTMLElement =
 			this.shadow.querySelector(".wrong-input");
@@ -163,8 +166,22 @@ class JoinFormComponent extends HTMLElement {
 			showNotification(wrongInputNotifEl);
 		});
 
+		document.addEventListener("keypress", () => {
+			inputFieldEl.focus();
+		});
+
+		document.addEventListener("keydown", (e) => {
+			if (e.key == "Enter") {
+				submitBtnEl.click();
+			}
+		});
+
 		submitBtnEl.addEventListener("click", (e) => {
 			e.preventDefault();
+			if (shadowSubmitBtnEl.classList.contains("request-btn")) {
+				shadowSubmitBtnEl.disabled = true;
+				shadowSubmitBtnEl.textContent = "Enviando...";
+			}
 			joinFormEl.requestSubmit();
 		});
 
@@ -204,6 +221,9 @@ class JoinFormComponent extends HTMLElement {
 									if (res.status == 401) {
 										hideNotification(processNotifEl);
 										showNotification(fullRoomNotifEl);
+										shadowSubmitBtnEl.disabled = false;
+										shadowSubmitBtnEl.textContent =
+											"Continuar";
 									} else if (res.status == 302) {
 										state.setRoomAccessData(
 											friendlyId,
@@ -226,7 +246,7 @@ class JoinFormComponent extends HTMLElement {
 											userAuthId,
 											user.userName
 										);
-										state;
+
 										const updateStatusPromise =
 											state.updatePlayerStatus(
 												secureId,
@@ -246,6 +266,8 @@ class JoinFormComponent extends HTMLElement {
 					setTimeout(() => {
 						wrongInputNotifEl.style.opacity = "0";
 					}, 6000);
+					shadowSubmitBtnEl.disabled = false;
+					shadowSubmitBtnEl.textContent = "Continuar";
 				}
 			});
 		});
