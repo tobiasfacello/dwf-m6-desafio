@@ -16,10 +16,6 @@ customElements.define(
 			const secureGameRoomId =
 				state.getState().currentGameRoom.accessData.secureId;
 
-			state.checkPlayersSelections() == false
-				? state.getPlayersChoices(secureGameRoomId)
-				: console.log("Choices Already Checked");
-
 			this.render();
 			this.addListeners();
 		}
@@ -29,9 +25,9 @@ customElements.define(
 				<div class="div-container">
 					<timer-comp></timer-comp>
 					<div class="options-container">
-						<hand-comp class="hand" type="tijeras" hand="tijeras"></hand-comp>
-						<hand-comp class="hand" type="piedra" hand="piedra"></hand-comp>
-						<hand-comp class="hand" type="papel" hand="papel"></hand-comp>
+						<hand-comp class="hand tijeras" type="tijeras" hand="tijeras"></hand-comp>
+						<hand-comp class="hand piedra" type="piedra" hand="piedra"></hand-comp>
+						<hand-comp class="hand papel" type="papel" hand="papel"></hand-comp>
 					</div>
 				</div>
 			`;
@@ -61,6 +57,11 @@ customElements.define(
 						width: 30%;
 					}
 				}
+
+				.hand:hover {
+					cursor: pointer;
+				}
+
 			`;
 
 			this.appendChild(style);
@@ -71,7 +72,7 @@ customElements.define(
 				".rps-container"
 			) as HTMLElement;
 
-			let counter = 3.7;
+			let counter = 5;
 
 			const intervals = setInterval(() => {
 				counter--;
@@ -84,7 +85,7 @@ customElements.define(
 					const updateStatusPromise = state.updatePlayerStatus(
 						secureId,
 						userAuthId,
-						"online"
+						"pending"
 					);
 
 					updateStatusPromise.then(() => {
@@ -94,13 +95,45 @@ customElements.define(
 				}
 			}, 1000);
 
-			const optionsContainer: HTMLCollection =
-				this.querySelector(".options-container").children;
+			const optionsContainer =
+				this.querySelectorAll(".options-container");
+
+			const rockHandEl: HTMLButtonElement = this.querySelector(".piedra");
+			const paperHandEl: HTMLButtonElement = this.querySelector(".papel");
+			const scissorsHandEl: HTMLButtonElement =
+				this.querySelector(".tijeras");
+
+			function changeButtonsPosition(val: string) {
+				rockHandEl.style.position = `${val}`;
+				paperHandEl.style.position = `${val}`;
+				scissorsHandEl.style.position = `${val}`;
+			}
 
 			for (const play of optionsContainer) {
 				play.addEventListener("click", (e) => {
 					e.preventDefault();
-					const userPlay = play.getAttribute("type") as Jugada;
+					const target = e.target as HTMLButtonElement;
+
+					if (target.classList.contains("piedra")) {
+						changeButtonsPosition("relative");
+						rockHandEl.style.bottom = "100px";
+						paperHandEl.style.top = "50px";
+						scissorsHandEl.style.top = "50px";
+					} else if (target.classList.contains("papel")) {
+						changeButtonsPosition("relative");
+						paperHandEl.style.bottom = "100px";
+						rockHandEl.style.top = "50px";
+						scissorsHandEl.style.top = "50px";
+					} else if (target.classList.contains("tijeras")) {
+						changeButtonsPosition("relative");
+						scissorsHandEl.style.bottom = "100px";
+						rockHandEl.style.top = "50px";
+						paperHandEl.style.top = "50px";
+					}
+
+					clearInterval(intervals);
+
+					const userPlay = target.getAttribute("type") as Jugada;
 
 					const secureId = state.getRoomAccessData().secureId;
 					const userAuthId: string = state.getUserAuthData().userId;
@@ -112,7 +145,9 @@ customElements.define(
 					);
 
 					updateChoicePromise.then(() => {
-						state.getPlayersChoices(secureId);
+						state.checkPlayersSelections() == false
+							? state.getPlayersChoices(secureId)
+							: console.log("Choices Already Checked");
 
 						if (state.checkPlayersSelections() == true) {
 							const playersData =
@@ -194,18 +229,17 @@ customElements.define(
 
 							this.appendChild(style);
 
-							let counterResult = 0.7;
+							let counterResult = 2;
 							const intervalResultAppearance = setInterval(() => {
 								counterResult--;
 								if (counterResult < 0) {
-									clearInterval(intervals);
 									clearInterval(intervalResultAppearance);
 
 									const updateStatusPromise =
 										state.updatePlayerStatus(
 											secureId,
 											userAuthId,
-											"online"
+											"pending"
 										);
 
 									updateStatusPromise.then(() => {

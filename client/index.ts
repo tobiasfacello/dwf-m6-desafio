@@ -1,5 +1,6 @@
 import { state } from "./state";
 import "../server/router";
+import { Router } from "@vaadin/router";
 
 //* Pages
 import "./pages/home/index";
@@ -29,15 +30,19 @@ import "./components/timer-comp";
 import "./components/hand-comp";
 import "./components/scoreboard-comp";
 
+async function beforeUnloadUpdates() {
+	const secureId: string = state.getRoomAccessData().secureId;
+	const userAuthId: string = state.getUserAuthData().userId;
+	state.setRealtimeConnection(false);
+	state.setPlayersSelections(false);
+	await state.updatePlayerStatus(secureId, userAuthId, "offline");
+	await state.updatePlayerChoice(secureId, userAuthId, "");
+}
+
 function main() {
 	state.initLocalStorage();
-	window.addEventListener("beforeunload", () => {
-		const secureId: string = state.getRoomAccessData().secureId;
-		const userAuthId: string = state.getUserAuthData().userId;
-		state.setRealtimeConnection(false);
-		state.setPlayersSelections(false);
-		state.updatePlayerStatus(secureId, userAuthId, "offline");
-		state.updatePlayerChoice(secureId, userAuthId, "");
+	window.addEventListener("beforeunload", async () => {
+		await beforeUnloadUpdates();
 	});
 }
 

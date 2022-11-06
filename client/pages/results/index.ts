@@ -1,4 +1,5 @@
 import { state } from "../../state";
+import { Router } from "@vaadin/router";
 
 //! Images
 const winnerImg = require("url:../../assets/winner.png");
@@ -51,8 +52,8 @@ customElements.define(
                 <h2 class="result-title">${this.getResult().toUpperCase()}</h2>
                 <scoreboard-comp></scoreboard-comp>
                 <div class="button-container">
-                    <btn-comp class="btn play-again" path="/gameroom/instructions" mintBtn>Volver a jugar</btn-comp>
-                    <btn-comp class="btn exit" path="/home" redBtn>Salir</btn-comp>
+                    <btn-comp class="btn play-again" mintBtn>Volver a jugar</btn-comp>
+                    <btn-comp class="btn exit" redBtn>Salir</btn-comp>
                 </div>
             </div>
             `;
@@ -101,6 +102,22 @@ customElements.define(
 			this.appendChild(style);
 		}
 
+		async setOnlineValues() {
+			const secureId = state.getRoomAccessData().secureId;
+			const userAuthId: string = state.getUserAuthData().userId;
+
+			await state.updatePlayerStatus(secureId, userAuthId, "online");
+			await state.setPlayersSelections(false);
+		}
+
+		async setOfflineValues() {
+			const secureId = state.getRoomAccessData().secureId;
+			const userAuthId: string = state.getUserAuthData().userId;
+
+			await state.updatePlayerStatus(secureId, userAuthId, "offline");
+			await state.updatePlayerChoice(secureId, userAuthId, "");
+		}
+
 		addListeners() {
 			const headerEl = document.querySelector(".header") as HTMLElement;
 			const headerShadowEl = headerEl.shadowRoot.querySelector(
@@ -125,18 +142,17 @@ customElements.define(
 			});
 
 			playAgainBtnEl.addEventListener("click", () => {
-				const secureId = state.getRoomAccessData().secureId;
-				const userAuthId: string = state.getUserAuthData().userId;
-				state.updatePlayerStatus(secureId, userAuthId, "ready");
-				state.setPlayersSelections(false);
+				const onlineValuesPromise = this.setOnlineValues();
+				onlineValuesPromise.then(() => {
+					Router.go("/gameroom/instructions");
+				});
 			});
 
-			exitBtnEl.addEventListener("click", () => {
-				const secureId = state.getRoomAccessData().secureId;
-				const userAuthId: string = state.getUserAuthData().userId;
-
-				state.updatePlayerStatus(secureId, userAuthId, "offline");
-				state.updatePlayerChoice(secureId, userAuthId, "");
+			exitBtnEl.addEventListener("click", async () => {
+				const offlineValuesPromise = this.setOfflineValues();
+				offlineValuesPromise.then(() => {
+					Router.go("/home");
+				});
 			});
 		}
 	}

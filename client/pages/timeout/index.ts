@@ -1,5 +1,6 @@
 import { state } from "../../state";
- 
+import { Router } from "@vaadin/router";
+
 customElements.define(
 	"timeout-page",
 	class initTimeoutPage extends HTMLElement {
@@ -35,21 +36,39 @@ customElements.define(
 			this.appendChild(style);
 		}
 
+		async setOnlineValues() {
+			const secureId = state.getRoomAccessData().secureId;
+			const userAuthId: string = state.getUserAuthData().userId;
+
+			await state.updatePlayerStatus(secureId, userAuthId, "online");
+			await state.setPlayersSelections(false);
+		}
+
+		async setOfflineValues() {
+			const secureId = state.getRoomAccessData().secureId;
+			const userAuthId: string = state.getUserAuthData().userId;
+
+			await state.updatePlayerStatus(secureId, userAuthId, "offline");
+			await state.updatePlayerChoice(secureId, userAuthId, "");
+		}
+
 		addListeners() {
 			const playAgainBtnEl: HTMLButtonElement =
 				this.querySelector(".play-again");
 			const exitBtnEl: HTMLButtonElement = this.querySelector(".exit");
 
 			playAgainBtnEl.addEventListener("click", () => {
-				const secureId = state.getRoomAccessData().secureId;
-				const userAuthId: string = state.getUserAuthData().userId;
-				state.updatePlayerStatus(secureId, userAuthId, "ready");
+				const onlineValuesPromise = this.setOnlineValues();
+				onlineValuesPromise.then(() => {
+					Router.go("/gameroom/instructions");
+				});
 			});
 
 			exitBtnEl.addEventListener("click", () => {
-				const secureId = state.getRoomAccessData().secureId;
-				const userAuthId: string = state.getUserAuthData().userId;
-				state.updatePlayerStatus(secureId, userAuthId, "offline");
+				const offlineValuesPromise = this.setOfflineValues();
+				offlineValuesPromise.then(() => {
+					Router.go("/home");
+				});
 			});
 		}
 	}

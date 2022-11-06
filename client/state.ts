@@ -67,8 +67,6 @@ const state = {
 				return player[1]["status"];
 			});
 
-			console.log(statusArr);
-
 			if (
 				(statusArr[0] == "ready" &&
 					statusArr[1] !== "ready" &&
@@ -112,8 +110,6 @@ const state = {
 
 			if (choicesArr[0] !== "" && choicesArr[1] !== "") {
 				if (this.checkPlayersSelections() == false) {
-					this.setPlayersSelections(true);
-
 					const currentState = this.getState();
 					const userAuthId = currentState.userAuthData.userId;
 
@@ -128,7 +124,7 @@ const state = {
 							}
 						}
 					);
-
+					this.setPlayersSelections(true);
 					console.log(actualChoicesArr);
 				} else {
 					return;
