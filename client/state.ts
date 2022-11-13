@@ -1,6 +1,6 @@
 import { realtimeDBClient } from "./db";
 import { Router } from "@vaadin/router";
-const API_BASE_URL = "https://rps-gameapp.onrender.com";
+const API_BASE_URL = "http://localhost:3000";
 
 //? Se declara el tipo "Jugada" para limitar el valor de los datos.
 type Jugada = "piedra" | "papel" | "tijeras";
@@ -100,7 +100,7 @@ const state = {
 
 	getPlayersChoices(secureId) {
 		const chatRoomsRef = realtimeDBClient.ref(`/gamerooms/${secureId}`);
-		chatRoomsRef.on("value", (snap) => {
+		chatRoomsRef.get().then((snap) => {
 			const snapData = snap.val();
 			const playersData = snapData.playersData;
 			const playersDataArr = Object.entries(playersData);
@@ -250,13 +250,6 @@ const state = {
 			currentState.history.result = "Empate";
 		} else {
 			currentState.history.result = "Perdiste";
-			this.updatePlayerScore(
-				secureId,
-				userAuthId,
-				Number(userScore) <= 0
-					? Number(userScore)
-					: Number(userScore) - 1
-			);
 		}
 	},
 

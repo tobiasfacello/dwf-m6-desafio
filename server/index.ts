@@ -51,7 +51,9 @@ app.get("/users/:userId", (req, res) => {
 					...snapData,
 				});
 			} else {
-				res.status(401).send();
+				res.status(404).send({
+					message: `El usuario con ID ${req.params.userId} no fue encontrado.`,
+				});
 			}
 		}
 	});
@@ -78,8 +80,17 @@ app.post("/users/auth", (req, res) => {
 						});
 					});
 			} else {
+				const docs = userData.docs;
+				const user = docs.map((doc) => {
+					return {
+						id: doc.id,
+						...doc.data(),
+					};
+				});
 				// Si el usuario existe previamente, informa que fue encontrado.
-				res.status(302).send();
+				res.status(302).send({
+					...user,
+				});
 			}
 		});
 });

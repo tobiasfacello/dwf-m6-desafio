@@ -1,6 +1,5 @@
 import { state } from "./state";
 import "../server/router";
-import { Router } from "@vaadin/router";
 
 //* Pages
 import "./pages/home/index";
@@ -41,9 +40,9 @@ async function beforeUnloadUpdates() {
 
 function main() {
 	state.initLocalStorage();
-	window.addEventListener("beforeunload", async () => {
-		await beforeUnloadUpdates();
-	});
+	// window.addEventListener("beforeunload", async () => {
+	// 	await beforeUnloadUpdates();
+	// });
 }
 
 main();

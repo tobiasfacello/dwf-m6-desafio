@@ -94,9 +94,6 @@ class AuthFormComponent extends HTMLElement {
 
 	render() {
 		this.shadow.innerHTML = `
-            <notification-comp class="notification unauthorized" errorNotification notificationTitle="Datos no coincidentes">
-            El usuario es correcto pero no se encuentra registrado en su dispositivo, por lo que no coincide con el identificador de seguridad.
-            </notification-comp>
             <notification-comp class="notification wrong-input" errorNotification notificationTitle="Error de autenticación">
             Por favor, ingrese los datos requeridos para continuar correctamente con la autenticación.
             </notification-comp>
@@ -132,9 +129,6 @@ class AuthFormComponent extends HTMLElement {
 		const wrongInputNotifEl: HTMLElement =
 			this.shadow.querySelector(".wrong-input");
 
-		const unauthorizedNotifEl: HTMLElement =
-			this.shadow.querySelector(".unauthorized");
-
 		const processNotifEl: HTMLElement =
 			this.shadow.querySelector(".process");
 
@@ -151,10 +145,6 @@ class AuthFormComponent extends HTMLElement {
 
 		wrongInputNotifEl.addEventListener("click", () => {
 			hideNotification(wrongInputNotifEl);
-		});
-
-		unauthorizedNotifEl.addEventListener("click", () => {
-			hideNotification(unauthorizedNotifEl);
 		});
 
 		processNotifEl.addEventListener("click", () => {
@@ -193,18 +183,30 @@ class AuthFormComponent extends HTMLElement {
 
 			formSubmissionPromise.then((res) => {
 				if (res.status == 201) {
-					const userId = res.response.then((res) => {
+					showNotification(processNotifEl);
+
+					const getUserIdPromise = res.response.then((res) => {
 						return res.id;
 					});
 
-					userId.then((id) => {
+					getUserIdPromise.then((id) => {
 						state.setUserAuthData(id, userName);
 					});
+
+					hideNotification(processNotifEl);
 
 					const path = state.getLocationAfterAuth();
 					Router.go(path);
 				} else if (res.status == 302) {
 					showNotification(processNotifEl);
+
+					const getUserIdPromise = res.response.then((res) => {
+						return res[0].id;
+					});
+
+					getUserIdPromise.then((userId) => {
+						state.setUserAuthData(userId, userName);
+					});
 
 					const userAuthId: string = state.getUserAuthData().userId;
 					const userAuthPromise = state.pullUserData(userAuthId);
@@ -218,20 +220,11 @@ class AuthFormComponent extends HTMLElement {
 							);
 							userDataPromise.then((user) => {
 								if (user.userName == userName) {
+									hideNotification(processNotifEl);
 									const path = state.getLocationAfterAuth();
 									Router.go(path);
-								} else {
-									hideNotification(processNotifEl);
-									showNotification(unauthorizedNotifEl);
-									shadowSubmitBtnEl.disabled = false;
-									shadowSubmitBtnEl.textContent = "Continuar";
 								}
 							});
-						} else if (res.status == 401) {
-							hideNotification(processNotifEl);
-							showNotification(unauthorizedNotifEl);
-							shadowSubmitBtnEl.disabled = false;
-							shadowSubmitBtnEl.textContent = "Continuar";
 						}
 					});
 				}

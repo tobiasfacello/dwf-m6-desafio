@@ -13,9 +13,6 @@ customElements.define(
 			) as HTMLElement;
 			rpsContainer.style.display = "none";
 
-			const secureGameRoomId =
-				state.getState().currentGameRoom.accessData.secureId;
-
 			this.render();
 			this.addListeners();
 		}
@@ -76,7 +73,111 @@ customElements.define(
 
 			const intervals = setInterval(() => {
 				counter--;
-				if (counter < -1) {
+				if (counter == 0) {
+					clearInterval(intervals);
+
+					const secureId = state.getRoomAccessData().secureId;
+					state.getPlayersChoices(secureId);
+					const userAuthId: string = state.getUserAuthData().userId;
+
+					const playersData =
+						state.getState().currentGameRoom.playersData;
+					const playersDataArr = Object.entries(playersData);
+
+					let userPlay;
+					let oponentPlay;
+
+					playersDataArr.map((player: {}) => {
+						if (player[0] == userAuthId) {
+							userPlay = player[1].choice;
+						} else {
+							oponentPlay = player[1].choice;
+						}
+					});
+
+					state.whoWins(userPlay, oponentPlay);
+					const style = document.createElement("style");
+
+					style.textContent = `
+							.div-container {
+								height: 101vh;
+								display: flex;
+								flex-direction: column;
+								justify-content: center;
+								align-items: center;
+							}
+						
+							.oponent-play {
+								height: 50vh;
+								display: flex;
+								justify-content: center;
+							}
+						
+							.user-play {
+								height: 51vh;
+								display: flex;
+								justify-content: center;
+								align-items: flex-end;
+							}
+							`;
+
+					this.innerHTML = `
+							<div class="oponent-play">
+							<hand-comp class="oponent-hand" type="${oponentPlay}" hand="${oponentPlay}"></hand-comp>
+							</div>
+							<div class="user-play">
+							<hand-comp class="user-hand" type="${userPlay}" hand="${userPlay}"></hand-comp>
+							</div>
+							`;
+
+					const userHand = this.querySelector(".user-hand");
+					const userHandImg =
+						userHand.shadowRoot.querySelector(".hand-img");
+					userHandImg.setAttribute(
+						"style",
+						`
+								height: 100%;
+								width: 200px;
+								`
+					);
+
+					const oponentHand = this.querySelector(".oponent-hand");
+					const oponentHandImg =
+						oponentHand.shadowRoot.querySelector(".hand-img");
+
+					oponentHandImg.setAttribute(
+						"style",
+						`
+								height: 100%;
+								width: 200px;
+								transform: rotate(180deg);
+								`
+					);
+
+					this.appendChild(style);
+
+					let counterResult = 2;
+					const intervalResultAppearance = setInterval(() => {
+						counterResult--;
+						if (counterResult < 0) {
+							const userAuthId: string =
+								state.getUserAuthData().userId;
+
+							clearInterval(intervalResultAppearance);
+
+							const updateStatusPromise =
+								state.updatePlayerStatus(
+									secureId,
+									userAuthId,
+									"pending"
+								);
+
+							updateStatusPromise.then(() => {
+								Router.go("/gameroom/results");
+							});
+						}
+					}, 1000);
+				} else if (counter < -1) {
 					clearInterval(intervals);
 
 					const secureId = state.getRoomAccessData().secureId;
@@ -131,8 +232,6 @@ customElements.define(
 						paperHandEl.style.top = "50px";
 					}
 
-					clearInterval(intervals);
-
 					const userPlay = target.getAttribute("type") as Jugada;
 
 					const secureId = state.getRoomAccessData().secureId;
@@ -144,111 +243,9 @@ customElements.define(
 						userPlay
 					);
 
-					updateChoicePromise.then(() => {
-						state.checkPlayersSelections() == false
-							? state.getPlayersChoices(secureId)
-							: console.log("Choices Already Checked");
+					// updateChoicePromise.then(() => {
 
-						if (state.checkPlayersSelections() == true) {
-							const playersData =
-								state.getState().currentGameRoom.playersData;
-							const playersDataArr = Object.entries(playersData);
-
-							let userPlay;
-							let oponentPlay;
-
-							playersDataArr.map((player: {}) => {
-								if (player[0] == userAuthId) {
-									userPlay = player[1].choice;
-								} else {
-									oponentPlay = player[1].choice;
-								}
-							});
-
-							state.whoWins(userPlay, oponentPlay);
-							const style = document.createElement("style");
-
-							style.textContent = `
-							.div-container {
-								height: 101vh;
-								display: flex;
-								flex-direction: column;
-								justify-content: center;
-								align-items: center;
-							}
-						
-							.oponent-play {
-								height: 50vh;
-								display: flex;
-								justify-content: center;
-							}
-						
-							.user-play {
-								height: 51vh;
-								display: flex;
-								justify-content: center;
-								align-items: flex-end;
-							}
-							`;
-
-							this.innerHTML = `
-							<div class="oponent-play">
-							<hand-comp class="oponent-hand" type="${oponentPlay}" hand="${oponentPlay}"></hand-comp>
-							</div>
-							<div class="user-play">
-							<hand-comp class="user-hand" type="${userPlay}" hand="${userPlay}"></hand-comp>
-							</div>
-							`;
-
-							const userHand = this.querySelector(".user-hand");
-							const userHandImg =
-								userHand.shadowRoot.querySelector(".hand-img");
-							userHandImg.setAttribute(
-								"style",
-								`
-								height: 100%;
-								width: 200px;
-								`
-							);
-
-							const oponentHand =
-								this.querySelector(".oponent-hand");
-							const oponentHandImg =
-								oponentHand.shadowRoot.querySelector(
-									".hand-img"
-								);
-
-							oponentHandImg.setAttribute(
-								"style",
-								`
-								height: 100%;
-								width: 200px;
-								transform: rotate(180deg);
-								`
-							);
-
-							this.appendChild(style);
-
-							let counterResult = 2;
-							const intervalResultAppearance = setInterval(() => {
-								counterResult--;
-								if (counterResult < 0) {
-									clearInterval(intervalResultAppearance);
-
-									const updateStatusPromise =
-										state.updatePlayerStatus(
-											secureId,
-											userAuthId,
-											"pending"
-										);
-
-									updateStatusPromise.then(() => {
-										Router.go("/gameroom/results");
-									});
-								}
-							}, 1000);
-						}
-					});
+					// });
 				});
 			}
 		}
