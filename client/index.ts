@@ -36,13 +36,13 @@ async function beforeUnloadUpdates() {
 	state.setPlayersSelections(false);
 	await state.updatePlayerStatus(secureId, userAuthId, "offline");
 	await state.updatePlayerChoice(secureId, userAuthId, "");
+	state.setState(state.data);
 }
 
 function main() {
-	state.initLocalStorage();
-	// window.addEventListener("beforeunload", async () => {
-	// 	await beforeUnloadUpdates();
-	// });
+	window.addEventListener("beforeunload", async () => {
+		await beforeUnloadUpdates();
+	});
 }
 
 main();

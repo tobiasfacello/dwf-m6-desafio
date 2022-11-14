@@ -1,5 +1,5 @@
 import { state } from "../../state";
-
+import { Router } from "@vaadin/router";
 customElements.define(
 	"instructions-page",
 	class initInstructionPage extends HTMLElement {
@@ -69,6 +69,8 @@ customElements.define(
 				);
 
 				updateStatusPromise.then(() => {
+					Router.go("/gameroom/waitroom");
+
 					const secureGameRoomId =
 						state.getState().currentGameRoom.accessData.secureId;
 					state.getPlayersStatus(secureGameRoomId);

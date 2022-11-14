@@ -82,8 +82,6 @@ const state = {
 				this.checkRealtimeConnection() == false
 					? this.setRealtimeConnection(true)
 					: "";
-
-				Router.go("/gameroom/waitroom");
 			} else if (
 				statusArr[0] == "ready" &&
 				statusArr[1] == "ready" &&
